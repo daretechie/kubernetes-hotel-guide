@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Hotel Analogy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .hotel-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        th {
+            padding: 1.5rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
+            transform: translateX(5px);
+            box-shadow: 5px 0 15px rgba(79, 172, 254, 0.2);
+        }
+
+        td {
+            padding: 1.5rem 2rem;
+            vertical-align: top;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        .k8s-term {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hotel-analogy {
+            color: #4a5568;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .category-infrastructure { background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(56, 178, 172, 0.1)); }
+        .category-workload { background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1)); }
+        .category-networking { background: linear-gradient(135deg, rgba(245, 101, 101, 0.1), rgba(251, 113, 133, 0.1)); }
+        .category-storage { background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 146, 60, 0.1)); }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 2rem; }
+            th, td { padding: 1rem; font-size: 0.9rem; }
+            .legend { gap: 1rem; }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="hotel-icon">🏨</div>
+            <h1>Kubernetes Hotel Analogy</h1>
+            <p>Understanding K8s concepts through familiar hotel operations</p>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #48bb78, #38b2ac);"></div>
+                Infrastructure
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);"></div>
+                Workload
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #f56565, #fb7185);"></div>
+                Networking
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #fbbf24, #fb923c);"></div>
+                Storage & Config
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kubernetes Term</th>
+                        <th>Hotel Analogy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Core Infrastructure (Foundation) -->
+                    <tr class="category-infrastructure">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🏗️</span>
+                                Cluster
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">The entire hotel building with all its facilities</td>
+                    </tr>
+                    <tr class="category-infrastructure">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🏢</span>
+                                Node
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Individual floor in the hotel</td>
+                    </tr>
+                    <tr class="category-infrastructure">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🏷️</span>
+                                Namespace
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Different wings or sections of the hotel (Business, Family, VIP)</td>
+                    </tr>
+                    
+                    <!-- Application Components (Core Runtime) -->
+                    <tr class="category-workload">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">📋</span>
+                                Image
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Guest registration profile with all their requirements and preferences</td>
+                    </tr>
+                    <tr class="category-workload">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">👤</span>
+                                Container
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Individual guest staying in the room</td>
+                    </tr>
+                    <tr class="category-workload">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🏠</span>
+                                Pod
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Individual room that can accommodate one or more guests</td>
+                    </tr>
+                    
+                    <!-- Workload Controllers (Management) -->
+                    <tr class="category-workload">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">👔</span>
+                                Deployment
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Hotel manager ensuring the right number of rooms are occupied</td>
+                    </tr>
+                    <tr class="category-workload">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🏛️</span>
+                                StatefulSet
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">VIP suites where important guests always return to the same room</td>
+                    </tr>
+                    <tr class="category-workload">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🧹</span>
+                                DaemonSet
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Cleaning staff - one team stationed on every floor</td>
+                    </tr>
+                    <tr class="category-workload">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">⚡</span>
+                                Job/CronJob
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Temporary or scheduled services (event setup, maintenance)</td>
+                    </tr>
+                    
+                    <!-- Networking (Communication) -->
+                    <tr class="category-networking">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">📞</span>
+                                Service
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Reception desk that gives each room a phone number and routes calls</td>
+                    </tr>
+                    <tr class="category-networking">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🚪</span>
+                                Ingress
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Main entrance with doorman directing visitors to the right places</td>
+                    </tr>
+                    
+                    <!-- Configuration & Secrets (Information Management) -->
+                    <tr class="category-storage">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🗂️</span>
+                                ConfigMap
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Hotel information booklet with maps, rules, and instructions</td>
+                    </tr>
+                    <tr class="category-storage">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🔐</span>
+                                Secret
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Secure safe at reception storing important keys and confidential info</td>
+                    </tr>
+                    
+                    <!-- Storage (Data Persistence) -->
+                    <tr class="category-storage">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🧳</span>
+                                Volume
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Personal storage space for guests' belongings</td>
+                    </tr>
+                    <tr class="category-storage">
+                        <td>
+                            <div class="k8s-term">
+                                <span class="icon">🏪</span>
+                                PV/PVC
+                            </div>
+                        </td>
+                        <td class="hotel-analogy">Storage lockers (PV) and guest requests for lockers (PVC)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>💡 Hover over rows to see them highlighted • Color-coded by component category</p>
+        </div>
+    </div>
+</body>
+</html>
